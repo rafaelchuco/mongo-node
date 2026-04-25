@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media - Posts</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="grey lighten-4">
+
+  <nav class="white z-depth-0" style="border-block-end: 1px solid #e5e7eb;">
+    <div class="nav-wrapper teal">
+      <a href="/" class="brand-logo center">Social Media</a>
+      <ul class="right hide-on-med-and-down" style="margin-inline-end: 20px;">
+        <li><a href="/" class="white-text"><i class="material-icons left">home</i>Inicio</a></li>
+        <li><a href="/posts" class="white-text"><i class="material-icons left">collections</i>Posts</a></li>
+        <li><a href="/posts/new" class="white-text"><i class="material-icons left">add</i>Nuevo</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="margin-block-start: 30px; margin-block-end: 60px;">
+    <div class="row">
+      <div class="col s12 m4">
+        <div class="card-panel white" style="border-radius: 18px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);">
+          <div style="display:flex; align-items:center; gap:12px; margin-block-end: 8px;">
+            <i class="material-icons teal-text">add_photo_alternate</i>
+            <h5 class="teal-text" style="margin:0;">Nuevo Post</h5>
+          </div>
+          <p class="grey-text text-darken-1">Agrega imágenes por enlace y comparte contenido con hashtags.</p>
+          <% if (typeof error !== 'undefined' && error) { %>
+            <div class="card-panel red lighten-4 red-text text-darken-4"><%= error %></div>
+          <% } %>
+
+          <form action="/posts" method="POST">
+            <div class="input-field">
+              <select name="userId" required>
+                <option value="" disabled selected>Selecciona usuario</option>
+                <% users.forEach((user) => { %>
+                  <option value="<%= user._id %>"><%= user.name %> <%= user.lastName %></option>
+                <% }) %>
+              </select>
+              <label>Usuario</label>
+            </div>
+
+            <div class="input-field">
+              <input id="title" name="title" type="text" minlength="5" maxlength="30" required>
+              <label for="title">Título</label>
+            </div>
+
+            <div class="input-field">
+              <textarea id="content" name="content" class="materialize-textarea" minlength="10" required></textarea>
+              <label for="content">Contenido</label>
+            </div>
+
+            <div class="input-field">
+              <input id="hashtags" name="hashtags" type="text" placeholder="ejemplo, social, nodejs">
+              <label for="hashtags">Hashtags</label>
+            </div>
+
+            <div class="input-field">
+              <input id="imageUrl" name="imageUrl" type="url" placeholder="https://...">
+              <label for="imageUrl">Imagen por enlace</label>
+            </div>
+
+            <button type="submit" class="btn waves-effect waves-light teal">Guardar</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col s12 m8">
+        <div class="card-panel white" style="border-radius: 18px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); margin-block-end: 24px;">
+          <h4 class="center-align" style="margin: 0;">Posts de todos los usuarios</h4>
+          <p class="center-align grey-text text-darken-1" style="margin-block-start: 10px; margin-block-end: 0;">Explora imágenes, enlaces y publicaciones de la comunidad.</p>
+        </div>
+
+        <div class="row">
+          <% if (posts && posts.length > 0) { %>
+            <% posts.forEach((post) => { %>
+              <div class="col s12 m6">
+                <div class="card" style="border-radius: 18px; overflow: hidden; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);">
+                  <div class="card-image" style="min-block-size: 220px; background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%); display: flex; align-items: center; justify-content: center;">
+                    <% if (post.imageUrl) { %>
+                      <img src="<%= post.imageUrl %>" alt="Imagen del post" style="inline-size: 100%; block-size: 220px; object-fit: cover;">
+                    <% } else { %>
+                      <div class="center-align" style="padding: 24px;">
+                        <i class="material-icons large teal-text">image_search</i>
+                        <p class="grey-text text-darken-1" style="margin: 0;">Sin imagen. Agrega un enlace para mostrarla.</p>
+                      </div>
+                    <% } %>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-title"><%= post.title %></span>
+                    <p><%= post.content %></p>
+                    <p style="margin-block-start: 10px;">
+                      <strong>Hashtags:</strong>
+                      <% if (post.hashtags && post.hashtags.length > 0) { %>
+                        <% post.hashtags.forEach((tag) => { %>
+                          <span class="chip">#<%= tag %></span>
+                        <% }) %>
+                      <% } else { %>
+                        <span class="grey-text">Sin hashtags</span>
+                      <% } %>
+                    </p>
+                  </div>
+                  <div class="card-action">
+                    <div class="right" style="display:flex; align-items:center; gap: 8px;">
+                      <a href="/posts/edit/<%= post._id %>" class="btn-small waves-effect waves-light teal"><i class="material-icons left">edit</i>Editar</a>
+                      <form action="/posts/delete/<%= post._id %>" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-small waves-effect waves-light red"><i class="material-icons left">delete</i>Eliminar</button>
+                      </form>
+                    </div>
+                    <div>
+                      <strong>Autor:</strong>
+                      <%= post.user ? `${post.user.name} ${post.user.lastName}` : "Sin autor" %>
+                      <% if (post.imageUrl) { %>
+                        <div style="margin-block-start: 8px;">
+                          <a href="<%= post.imageUrl %>" target="_blank" rel="noopener noreferrer">Abrir imagen en una nueva pestaña</a>
+                        </div>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="col s12">
+              <p class="flow-text center-align">No hay publicaciones registradas todavía.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const selects = document.querySelectorAll('select');
+      M.FormSelect.init(selects);
+    });
+  </script>
+</body>
+</html>

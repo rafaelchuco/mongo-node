@@ -1,31 +1,30 @@
+import express from "express";
+import { fileURLToPath } from "url";
+import path from "path";
+import dotenv from "dotenv";
 import connectDB from "./src/db/database.js";
-import postRepository from "./src/repositories/postRepository.js";
-import userRepository from "./src/repositories/userRepository.js";
+
+import homeRoutes from "./src/routes/home.routes.js";
+import postRoutes from "./src/routes/post.routes.js";
+
+dotenv.config();
+
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "src", "views"));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "src", "public")));
+
+app.use("/", homeRoutes);
+app.use("/posts", postRoutes);
 
 await connectDB();
 
-try {
-	const userData = {
-		email: "rafel.chuco@tecsup.edu.pe",
-		name: "Rafael",
-		lastName: "Chuco"
-	};
+const PORT = process.env.PORT || 3000;
 
-	const user = await userRepository.findByEmail(userData.email) ?? await userRepository.create(userData);
-
-	console.log("Usuario creado: ", user);
-
-	await postRepository.create({
-		title: "Hola Mundo",
-		content: "Adios Mundo",
-		user: user._id
-	});
-
-	const users = await userRepository.findAll();
-	console.log("Usuarios actuales: ", users);
-
-	const posts = await postRepository.findAll();
-	console.log("Posts registrados: ", posts);
-} catch (error) {
-	console.log("Error: ", error);
-}
+app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));

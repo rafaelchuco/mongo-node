@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #111827;
+            color: #f3f4f6;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        h1, h2 {
+            margin-block-start: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li + li {
+            margin-top: 10px;
+        }
+
+        .muted {
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1><%= title %></h1>
+        <p class="muted">Aplicación web conectada a MongoDB con Express y EJS.</p>
+
+        <section class="grid">
+            <div class="card">
+                <h2>Usuarios</h2>
+                <p class="muted">Total: <%= users.length %></p>
+                <ul>
+                    <% users.forEach((user) => { %>
+                        <li><strong><%= user.name %> <%= user.lastName %></strong> - <%= user.email %></li>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>Posts</h2>
+                <p class="muted">Total: <%= posts.length %></p>
+                <ul>
+                    <% posts.forEach((post) => { %>
+                        <li>
+                            <strong><%= post.title %></strong>
+                            <div class="muted"><%= post.content %></div>
+                            <div class="muted">Usuario: <%= post.user ? post.user.email : "Sin usuario" %></div>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
