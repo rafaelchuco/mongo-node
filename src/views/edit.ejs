@@ -6,31 +6,38 @@
   <title>Editar Post</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
 </head>
-<body class="grey lighten-4">
-  <nav class="white z-depth-0" style="border-block-end: 1px solid #e5e7eb;">
-    <div class="nav-wrapper teal">
-      <a href="/posts" class="brand-logo center">Social Media</a>
-      <ul class="right hide-on-med-and-down" style="margin-inline-end: 20px;">
-        <li><a href="/" class="white-text"><i class="material-icons left">home</i>Inicio</a></li>
-        <li><a href="/posts" class="white-text"><i class="material-icons left">collections</i>Posts</a></li>
+<body class="app-shell">
+  <nav class="app-nav z-depth-0">
+    <div class="nav-wrapper container">
+      <a href="/posts" class="brand-logo app-brand teal-text text-darken-2">Social Media</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/posts">Posts</a></li>
       </ul>
     </div>
   </nav>
 
-  <div class="container" style="margin-block-start: 40px; max-inline-size: 760px;">
-    <div class="card-panel white" style="border-radius: 18px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);">
-      <div style="display:flex; align-items:center; gap:12px; margin-block-end: 12px;">
-        <i class="material-icons teal-text">edit</i>
-        <h4 class="teal-text" style="margin:0;">Editar Post</h4>
+  <main class="container page-wrap" style="max-inline-size: 760px;">
+    <section class="edit-panel panel" style="padding: 22px;">
+      <div class="edit-banner">
+        <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1200&q=80" alt="Editar publicaciones en Social Media">
       </div>
-      <p class="grey-text text-darken-1">Actualiza texto, hashtags, enlaces e imagen por URL.</p>
+      <div class="section-heading">
+        <div>
+          <h4>Editar Post</h4>
+          <p class="section-muted">Actualiza texto, hashtags, enlaces e imagen por URL.</p>
+        </div>
+      </div>
+
+      <% const currentUserId = post.user ? String(post.user._id) : ""; %>
 
       <form action="/posts/edit/<%= post._id %>" method="POST">
         <div class="input-field">
           <select name="userId" required>
             <% users.forEach((user) => { %>
-              <option value="<%= user._id %>" <%= String(post.user._id) === String(user._id) ? 'selected' : '' %>><%= user.name %> <%= user.lastName %></option>
+              <option value="<%= user._id %>" <%= currentUserId === String(user._id) ? 'selected' : '' %>><%= user.name %> <%= user.lastName %></option>
             <% }) %>
           </select>
           <label>Usuario</label>
@@ -56,11 +63,11 @@
           <label for="imageUrl" class="active">Imagen por enlace</label>
         </div>
 
-        <button type="submit" class="btn waves-effect waves-light teal">Actualizar</button>
+        <button type="submit" class="btn waves-effect waves-light teal darken-2">Actualizar cambios</button>
         <a href="/posts" class="btn-flat">Cancelar</a>
       </form>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script>

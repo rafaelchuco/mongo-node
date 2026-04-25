@@ -6,29 +6,33 @@
   <title>Social Media - Posts</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
 </head>
-<body class="grey lighten-4">
-
-  <nav class="white z-depth-0" style="border-block-end: 1px solid #e5e7eb;">
-    <div class="nav-wrapper teal">
-      <a href="/" class="brand-logo center">Social Media</a>
-      <ul class="right hide-on-med-and-down" style="margin-inline-end: 20px;">
-        <li><a href="/" class="white-text"><i class="material-icons left">home</i>Inicio</a></li>
-        <li><a href="/posts" class="white-text"><i class="material-icons left">collections</i>Posts</a></li>
-        <li><a href="/posts/new" class="white-text"><i class="material-icons left">add</i>Nuevo</a></li>
+<body class="app-shell">
+  <nav class="app-nav z-depth-0">
+    <div class="nav-wrapper container">
+      <a href="/" class="brand-logo app-brand teal-text text-darken-2">Social Media</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/posts">Posts</a></li>
+        <li><a href="/posts/new">Nuevo Post</a></li>
       </ul>
     </div>
   </nav>
 
-  <div class="container" style="margin-block-start: 30px; margin-block-end: 60px;">
+  <main class="container page-wrap">
     <div class="row">
       <div class="col s12 m4">
-        <div class="card-panel white" style="border-radius: 18px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);">
-          <div style="display:flex; align-items:center; gap:12px; margin-block-end: 8px;">
-            <i class="material-icons teal-text">add_photo_alternate</i>
-            <h5 class="teal-text" style="margin:0;">Nuevo Post</h5>
+        <aside class="form-panel">
+          <div class="form-banner">
+            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=80" alt="Compartiendo contenido social">
           </div>
-          <p class="grey-text text-darken-1">Agrega imágenes por enlace y comparte contenido con hashtags.</p>
+          <div class="section-heading">
+            <div>
+              <h5 class="teal-text">Nuevo Post</h5>
+              <p class="section-muted">Crea publicaciones con imagen, hashtags y enlaces.</p>
+            </div>
+          </div>
           <% if (typeof error !== 'undefined' && error) { %>
             <div class="card-panel red lighten-4 red-text text-darken-4"><%= error %></div>
           <% } %>
@@ -64,36 +68,43 @@
               <label for="imageUrl">Imagen por enlace</label>
             </div>
 
-            <button type="submit" class="btn waves-effect waves-light teal">Guardar</button>
+            <button type="submit" class="btn waves-effect waves-light teal darken-2">Guardar post</button>
           </form>
-        </div>
+        </aside>
       </div>
 
       <div class="col s12 m8">
-        <div class="card-panel white" style="border-radius: 18px; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08); margin-block-end: 24px;">
-          <h4 class="center-align" style="margin: 0;">Posts de todos los usuarios</h4>
-          <p class="center-align grey-text text-darken-1" style="margin-block-start: 10px; margin-block-end: 0;">Explora imágenes, enlaces y publicaciones de la comunidad.</p>
-        </div>
+        <section class="feed-panel" style="padding: 22px; margin-block-end: 24px;">
+          <div class="feed-banner">
+            <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1400&q=80" alt="Publicaciones de social media">
+          </div>
+          <div class="section-heading" style="margin-block-end: 0;">
+            <div>
+              <h4>Posts de todos los usuarios</h4>
+              <p class="section-muted">Explora imágenes, enlaces y publicaciones de la comunidad.</p>
+            </div>
+          </div>
+        </section>
 
         <div class="row">
           <% if (posts && posts.length > 0) { %>
             <% posts.forEach((post) => { %>
               <div class="col s12 m6">
-                <div class="card" style="border-radius: 18px; overflow: hidden; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);">
-                  <div class="card-image" style="min-block-size: 220px; background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 100%); display: flex; align-items: center; justify-content: center;">
+                <article class="post-card">
+                  <div class="card-image">
                     <% if (post.imageUrl) { %>
-                      <img src="<%= post.imageUrl %>" alt="Imagen del post" style="inline-size: 100%; block-size: 220px; object-fit: cover;">
+                      <img src="<%= post.imageUrl %>" alt="Imagen del post">
                     <% } else { %>
-                      <div class="center-align" style="padding: 24px;">
+                      <div class="center-align" style="padding: 24px; display:flex; flex-direction:column; align-items:center; justify-content:center; min-block-size: 230px;">
                         <i class="material-icons large teal-text">image_search</i>
                         <p class="grey-text text-darken-1" style="margin: 0;">Sin imagen. Agrega un enlace para mostrarla.</p>
                       </div>
                     <% } %>
                   </div>
-                  <div class="card-content">
-                    <span class="card-title"><%= post.title %></span>
-                    <p><%= post.content %></p>
-                    <p style="margin-block-start: 10px;">
+                  <div class="post-body">
+                    <div class="post-title"><%= post.title %></div>
+                    <p class="post-content"><%= post.content %></p>
+                    <p style="margin-block-start: 14px;">
                       <strong>Hashtags:</strong>
                       <% if (post.hashtags && post.hashtags.length > 0) { %>
                         <% post.hashtags.forEach((tag) => { %>
@@ -104,14 +115,8 @@
                       <% } %>
                     </p>
                   </div>
-                  <div class="card-action">
-                    <div class="right" style="display:flex; align-items:center; gap: 8px;">
-                      <a href="/posts/edit/<%= post._id %>" class="btn-small waves-effect waves-light teal"><i class="material-icons left">edit</i>Editar</a>
-                      <form action="/posts/delete/<%= post._id %>" method="POST" style="display:inline;">
-                        <button type="submit" class="btn-small waves-effect waves-light red"><i class="material-icons left">delete</i>Eliminar</button>
-                      </form>
-                    </div>
-                    <div>
+                  <div class="post-meta">
+                    <div class="post-author">
                       <strong>Autor:</strong>
                       <%= post.user ? `${post.user.name} ${post.user.lastName}` : "Sin autor" %>
                       <% if (post.imageUrl) { %>
@@ -120,8 +125,14 @@
                         </div>
                       <% } %>
                     </div>
+                    <div class="action-row">
+                      <a href="/posts/edit/<%= post._id %>" class="btn-small waves-effect waves-light teal darken-2"><i class="material-icons left">edit</i>Editar</a>
+                      <form action="/posts/delete/<%= post._id %>" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-small waves-effect waves-light red darken-1"><i class="material-icons left">delete</i>Eliminar</button>
+                      </form>
+                    </div>
                   </div>
-                </div>
+                </article>
               </div>
             <% }) %>
           <% } else { %>
@@ -132,7 +143,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script>
